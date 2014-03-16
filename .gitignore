@@ -1,13 +1,11 @@
-# make sure we don't push the executable.
-gjoa
-!gjoa/
-
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
 *.so
 *.out
 *.test
+gin-bin
+out.*
 
 # Folders
 _obj
@@ -16,6 +14,7 @@ tmp
 old
 log*
 out
+data
 
 # Architecture specific extensions/prefixes
 *.[568vq]
