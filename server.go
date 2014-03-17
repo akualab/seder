@@ -46,6 +46,31 @@ func main() {
 		return "Hello seder!"
 	})
 
+	m.Post("/v0/log", func(res http.ResponseWriter, req *http.Request) []byte {
+		body, err := ioutil.ReadAll(req.Body)
+		PanicIf(err)
+		log.Printf("received %d bytes\n", len(body))
+		if len(body) == 0 {
+			log.Printf("WARNING: body is empty!")
+			for k, v := range req.Header {
+				log.Printf("%20s: %s\n", k, v)
+			}
+			return []byte("error\n")
+		}
+		log.Printf("LOG: %s", string(body[:]))
+
+		res.Header().Set("Content-Type", "application/octet-stream")
+		// Convert Unix time to 32-bit word.
+		t := uint32(time.Now().UTC().Unix())
+
+		// Convert uint32 to []byte.
+		buf := new(bytes.Buffer)
+		PanicIf(binary.Write(buf, binary.LittleEndian, t))
+		log.Printf("***DEBUG TIME: %+v", buf.Bytes())
+
+		return buf.Bytes()
+	})
+
 	m.Post("/v0/data", func(res http.ResponseWriter, req *http.Request) []byte {
 		body, err := ioutil.ReadAll(req.Body)
 		PanicIf(err)
